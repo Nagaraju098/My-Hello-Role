@@ -1,0 +1,7 @@
+--- 
+
+  - name: httpd restarted
+    service:
+        name: httpd
+        state: restarted
+...

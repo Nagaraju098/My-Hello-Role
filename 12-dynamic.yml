@@ -1,0 +1,40 @@
+--- 
+- name: update web servers
+  hosts: web
+  become: yes
+  vars: 
+      http_port: 9090
+
+  handlers: 
+  - name: httpd restarted
+    service:
+        name: httpd
+        state: restarted 
+  tasks:
+  - name: nsure port is changed
+    template:
+      src: httpd.j2
+      dest: /etc/httpd/conf/httpd.conf
+    notify:
+       - httpd restarted 
+
+  - name: ensure SELinus is permissive
+    selinux:
+       policy: targeted
+       state: permissive
+ 
+  - name: ensure php is installed
+    package:
+       name: php
+       state: present
+  
+  - name: ensure date is updated
+    copy:
+        dest: /var/www/html/date.php
+        src: date.php
+    notify:
+       - httpd restarted 
+
+...
+
+       
